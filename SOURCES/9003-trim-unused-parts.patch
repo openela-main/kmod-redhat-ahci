@@ -1,0 +1,237 @@
+Index: src/drivers/ata/ahci.c
+===================================================================
+--- src.orig/drivers/ata/ahci.c	2023-08-05 22:17:36.154536550 +0200
++++ src/drivers/ata/ahci.c	2023-08-05 22:44:46.371682515 +0200
+@@ -64,6 +64,7 @@
+ enum board_ids {
+ 	/* board IDs by feature in alphabetical order */
+ 	board_ahci,
++#if 0
+ 	board_ahci_ign_iferr,
+ 	board_ahci_mobile,
+ 	board_ahci_nomsi,
+@@ -93,11 +94,13 @@
+ 	board_ahci_mcp67	= board_ahci_mcp65,
+ 	board_ahci_mcp73	= board_ahci_mcp65,
+ 	board_ahci_mcp79	= board_ahci_mcp77,
++#endif
+ };
+ 
+ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent);
+ static void ahci_remove_one(struct pci_dev *dev);
+ static void ahci_shutdown_one(struct pci_dev *dev);
++#if 0
+ static int ahci_vt8251_hardreset(struct ata_link *link, unsigned int *class,
+ 				 unsigned long deadline);
+ static int ahci_avn_hardreset(struct ata_link *link, unsigned int *class,
+@@ -106,6 +109,7 @@
+ static bool is_mcp89_apple(struct pci_dev *pdev);
+ static int ahci_p5wdh_hardreset(struct ata_link *link, unsigned int *class,
+ 				unsigned long deadline);
++#endif
+ #ifdef CONFIG_PM
+ static int ahci_pci_device_runtime_suspend(struct device *dev);
+ static int ahci_pci_device_runtime_resume(struct device *dev);
+@@ -119,6 +123,7 @@
+ 	AHCI_SHT(DRV_NAME),
+ };
+ 
++#if 0
+ static struct ata_port_operations ahci_vt8251_ops = {
+ 	.inherits		= &ahci_ops,
+ 	.hardreset		= ahci_vt8251_hardreset,
+@@ -133,6 +138,7 @@
+ 	.inherits		= &ahci_ops,
+ 	.hardreset		= ahci_avn_hardreset,
+ };
++#endif
+ 
+ static const struct ata_port_info ahci_port_info[] = {
+ 	/* by features */
+@@ -142,6 +148,7 @@
+ 		.udma_mask	= ATA_UDMA6,
+ 		.port_ops	= &ahci_ops,
+ 	},
++#if 0
+ 	[board_ahci_ign_iferr] = {
+ 		AHCI_HFLAGS	(AHCI_HFLAG_IGN_IRQ_IF_ERR),
+ 		.flags		= AHCI_FLAG_COMMON,
+@@ -257,9 +264,11 @@
+ 		.udma_mask	= ATA_UDMA6,
+ 		.port_ops	= &ahci_ops,
+ 	},
++#endif
+ };
+ 
+ static const struct pci_device_id ahci_pci_tbl[] = {
++#if 0
+ 	/* Intel */
+ 	{ PCI_VDEVICE(INTEL, 0x06d6), board_ahci }, /* Comet Lake PCH-H RAID */
+ 	{ PCI_VDEVICE(INTEL, 0x2652), board_ahci }, /* ICH6 */
+@@ -463,11 +472,13 @@
+ 	/* AMD is using RAID class only for ahci controllers */
+ 	{ PCI_VENDOR_ID_AMD, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
+ 	  PCI_CLASS_STORAGE_RAID << 8, 0xffffff, board_ahci },
++#endif
+ 
+ 	/* Dell S140/S150 */
+ 	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, PCI_SUBVENDOR_ID_DELL, PCI_ANY_ID,
+ 	  PCI_CLASS_STORAGE_RAID << 8, 0xffffff, board_ahci },
+ 
++#if 0
+ 	/* VIA */
+ 	{ PCI_VDEVICE(VIA, 0x3349), board_ahci_vt8251 }, /* VIA VT8251 */
+ 	{ PCI_VDEVICE(VIA, 0x6287), board_ahci_vt8251 }, /* VIA VT8251 */
+@@ -624,6 +635,7 @@
+ 	/* Generic, PCI class code for AHCI */
+ 	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
+ 	  PCI_CLASS_STORAGE_SATA_AHCI, 0xffffff, board_ahci },
++#endif
+ 
+ 	{ }	/* terminate list */
+ };
+@@ -709,6 +721,7 @@
+ 	ahci_init_controller(host);
+ }
+ 
++#if 0
+ static int ahci_vt8251_hardreset(struct ata_link *link, unsigned int *class,
+ 				 unsigned long deadline)
+ {
+@@ -849,6 +862,7 @@
+ 	DPRINTK("EXIT, rc=%d, class=%u\n", rc, *class);
+ 	return rc;
+ }
++#endif
+ 
+ 
+ #ifdef CONFIG_PM
+@@ -913,9 +927,11 @@
+ 	struct ata_host *host = pci_get_drvdata(pdev);
+ 	int rc;
+ 
++#if 0
+ 	/* Apple BIOS helpfully mangles the registers on resume */
+ 	if (is_mcp89_apple(pdev))
+ 		ahci_mcp89_apple_enable(pdev);
++#endif
+ 
+ 	if (pdev->dev.power.power_state.event == PM_EVENT_SUSPEND) {
+ 		rc = ahci_reset_controller(host);
+@@ -973,6 +989,7 @@
+ 	ahci_print_info(host, scc_s);
+ }
+ 
++#if 0
+ /* On ASUS P5W DH Deluxe, the second port of PCI device 00:1f.2 is
+  * hardwired to on-board SIMG 4726.  The chipset is ICH8 and doesn't
+  * support PMP and the 4726 either directly exports the device
+@@ -1477,6 +1494,7 @@
+ 		}
+ 	}
+ }
++#endif
+ 
+ #ifdef CONFIG_ARM64
+ /*
+@@ -1648,9 +1666,11 @@
+ 	if (!id || id->vendor != PCI_VENDOR_ID_INTEL)
+ 		return;
+ 
++#if 0
+ 	/* Skip applying the quirk on Denverton and beyond */
+ 	if (((enum board_ids) id->driver_data) >= board_ahci_pcs7)
+ 		return;
++#endif
+ 
+ 	/*
+ 	 * port_map is determined from PORTS_IMPL PCI register which is
+@@ -1696,6 +1716,7 @@
+ 
+ 	ata_print_version_once(&pdev->dev, DRV_VERSION);
+ 
++#if 0
+ 	/* The AHCI driver can only drive the SATA ports, the PATA driver
+ 	   can drive them all so if both drivers are selected make sure
+ 	   AHCI stays out of the way */
+@@ -1725,12 +1746,14 @@
+ 		if (pdev->device == 0xa084)
+ 			ahci_pci_bar = AHCI_PCI_BAR_CAVIUM_GEN5;
+ 	}
++#endif
+ 
+ 	/* acquire resources */
+ 	rc = pcim_enable_device(pdev);
+ 	if (rc)
+ 		return rc;
+ 
++#if 0
+ 	if (pdev->vendor == PCI_VENDOR_ID_INTEL &&
+ 	    (pdev->device == 0x2652 || pdev->device == 0x2653)) {
+ 		u8 map;
+@@ -1746,6 +1769,7 @@
+ 			return -ENODEV;
+ 		}
+ 	}
++#endif
+ 
+ 	/* AHCI controllers often implement SFF compatible interface.
+ 	 * Grab all PCI BARs just in case.
+@@ -1761,6 +1785,7 @@
+ 		return -ENOMEM;
+ 	hpriv->flags |= (unsigned long)pi.private_data;
+ 
++#if 0
+ 	/* MCP65 revision A1 and A2 can't do MSI */
+ 	if (board_id == board_ahci_mcp65 &&
+ 	    (pdev->revision == 0xa1 || pdev->revision == 0xa2))
+@@ -1773,6 +1798,7 @@
+ 	/* only some SB600s can do 64bit DMA */
+ 	if (ahci_sb600_enable_64bit(pdev))
+ 		hpriv->flags &= ~AHCI_HFLAG_32BIT_ONLY;
++#endif
+ 
+ 	hpriv->mmio = pcim_iomap_table(pdev)[ahci_pci_bar];
+ 
+@@ -1783,9 +1809,11 @@
+ 				&dev_attr_remapped_nvme.attr,
+ 				NULL);
+ 
++#if 0
+ 	/* must set flag prior to save config in order to take effect */
+ 	if (ahci_broken_devslp(pdev))
+ 		hpriv->flags |= AHCI_HFLAG_NO_DEVSLP;
++#endif
+ 
+ #ifdef CONFIG_ARM64
+ 	if (pdev->vendor == 0x177d && pdev->device == 0xa01c)
+@@ -1827,6 +1855,7 @@
+ 
+ 	ahci_set_em_messages(hpriv, &pi);
+ 
++#if 0
+ 	if (ahci_broken_system_poweroff(pdev)) {
+ 		pi.flags |= ATA_FLAG_NO_POWEROFF_SPINDOWN;
+ 		dev_info(&pdev->dev,
+@@ -1854,6 +1883,7 @@
+ 
+ 	/* Acer SA5-271 workaround modifies private_data */
+ 	acer_sa5_271_workaround(hpriv, pdev);
++#endif
+ 
+ 	/* CAP.NP sometimes indicate the index of the last enabled
+ 	 * port, at other times, that of the last possible port, so
+@@ -1899,11 +1929,13 @@
+ 			ap->ops = &ata_dummy_port_ops;
+ 	}
+ 
++#if 0
+ 	/* apply workaround for ASUS P5W DH Deluxe mainboard */
+ 	ahci_p5wdh_workaround(host);
+ 
+ 	/* apply gtf filter quirk */
+ 	ahci_gtf_filter_workaround(host);
++#endif
+ 
+ 	/* initialize adapter */
+ 	rc = ahci_configure_dma_masks(pdev, hpriv->cap & HOST_CAP_64);
