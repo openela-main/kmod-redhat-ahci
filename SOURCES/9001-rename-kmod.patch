@@ -1,0 +1,22 @@
+Index: src/drivers/ata/ahci.c
+===================================================================
+--- src.orig/drivers/ata/ahci.c	2023-08-05 22:01:45.253625031 +0200
++++ src/drivers/ata/ahci.c	2023-08-05 22:16:23.939337170 +0200
+@@ -50,7 +50,7 @@
+ #include <linux/io-64-nonatomic-lo-hi.h>
+ #include "ahci.h"
+ 
+-#define DRV_NAME	"ahci"
++#define DRV_NAME	"ahci_dup88"
+ #define DRV_VERSION	"3.0"
+ 
+ enum {
+@@ -116,7 +116,7 @@
+ #endif /* CONFIG_PM */
+ 
+ static struct scsi_host_template ahci_sht = {
+-	AHCI_SHT("ahci"),
++	AHCI_SHT(DRV_NAME),
+ };
+ 
+ static struct ata_port_operations ahci_vt8251_ops = {

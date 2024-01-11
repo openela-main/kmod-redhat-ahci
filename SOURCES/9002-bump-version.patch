@@ -1,0 +1,13 @@
+Index: src/drivers/ata/ahci.c
+===================================================================
+--- src.orig/drivers/ata/ahci.c	2023-08-05 22:16:23.939337170 +0200
++++ src/drivers/ata/ahci.c	2023-08-05 22:17:36.154536550 +0200
+@@ -51,7 +51,7 @@
+ #include "ahci.h"
+ 
+ #define DRV_NAME	"ahci_dup88"
+-#define DRV_VERSION	"3.0"
++#define DRV_VERSION	"3.0_dup88"
+ 
+ enum {
+ 	AHCI_PCI_BAR_STA2X11	= 0,
